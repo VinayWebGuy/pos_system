@@ -57,4 +57,7 @@ Route::group(['middleware'=>'loginauth'],function(){
     Route::post('change-supplier-status', [SupplierController::class, 'changeSupplierStatus']);
     Route::post('delete-supplier', [SupplierController::class, 'deleteSupplier']);
     Route::post('update-supplier', [SupplierController::class, 'updateSupplier']);
+
+    // Ajax
+    Route::get('get-product-from-code', [ProductController::class, 'getProductFromCode']);
 });

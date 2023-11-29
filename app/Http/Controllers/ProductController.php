@@ -116,4 +116,9 @@ class ProductController extends Controller
         $product->save();
         return response()->json(['success' => true, 'msg' => 'Product updated successfully']); 
     }
+
+    public function getProductFromCode(Request $req) {
+       $product = Product::where('unique_id', $req->code)->first();
+       return $product->buying_price;
+    }
 }

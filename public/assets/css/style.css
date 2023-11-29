@@ -515,7 +515,7 @@ input[type="file"] {
     margin-bottom: 10px;
 }
 .select-products td:first-child, .select-products td:last-child {
-    width: 5%;
+    width: 4%;
 }
 .select-products td:nth-child(2) {
     width: 30%;
@@ -536,6 +536,28 @@ input[type="file"] {
 }
 .select-products tbody tr {
     margin: 10px 0;
+}
+.delete-row.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+    pointer-events: none;
+}
+.summary {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--clr);
+    color: #fff;
+    margin-top: 30px;
+    padding: 7px 12px;
+}
+.summary > div span {
+    display: block;
+}
+.summary > div span:last-child {
+    font-size: 1.3rem;
+    margin-top: 8px;
+    font-weight: 800;
+    text-align: center;
 }
 
 @media screen and (max-width: 990px) {

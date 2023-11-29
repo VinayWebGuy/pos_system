@@ -615,3 +615,5 @@ $('#update-supplier-form').on('submit', function (e) {
         }
     })
 })
+
+
