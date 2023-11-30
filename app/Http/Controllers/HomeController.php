@@ -111,7 +111,8 @@ class HomeController extends Controller
             return view('main.sale.all-sale');
         }
         else if($action == "add") {
-            return view('main.sale.add-sale');
+            $products = Product::orderBy('name', 'ASC')->where('status', 1)->get();
+            return view('main.sale.add-sale', compact('products'));
         }
     }
     public function manageStock($action, $id="") {

@@ -15,6 +15,8 @@
 <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 {{-- JS --}}
 <script src="{{ asset('assets/js/script.js') }}"></script>
+<script src="{{ asset('assets/js/purchase.js') }}"></script>
+<script src="{{ asset('assets/js/sale.js') }}"></script>
 <script src="{{ asset('assets/js/form.js') }}"></script>
 </body>
 

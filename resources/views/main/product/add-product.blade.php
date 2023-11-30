@@ -53,6 +53,7 @@
                         <div class="form-block">
                             <label for="discount_type">Discount Type</label>
                             <select name="discount_type" id="discount_type" class="">
+                                <option value="">Choose</option>
                                 <option value="percent">Percent</option>
                                 <option value="fixed">Fixed</option>
                             </select>

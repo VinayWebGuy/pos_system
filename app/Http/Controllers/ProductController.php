@@ -119,6 +119,10 @@ class ProductController extends Controller
 
     public function getProductFromCode(Request $req) {
        $product = Product::where('unique_id', $req->code)->first();
-       return $product->buying_price;
+       return response()->json([
+        'product' => $product
+    ]);
     }
+
+     
 }

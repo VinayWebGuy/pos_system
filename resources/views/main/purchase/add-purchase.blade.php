@@ -6,16 +6,26 @@
         <h4 class="page-heading">Add Purchase
             <a href="{{url('purchase/all')}}">All Purchase</a>
         </h4>
+        <div class="backdrop"></div>
+        <div class="delete-modal">
+            <div class="delete-icon"><i class="fa fa-question"></i></div>
+            <div class="delete-confirmation">Are you sure do you really want to reset?</div>
+            <div class="delete-buttons">
+                <button id="cancel-delete" class="btn prev">No</button>
+                <button id="confirm-delete" class="btn">Yes</button>
+            </div>
+        </div>
         <div class="data">
-            <form action="">
-                <div class="form-row">
+            <div class="sale-purchase-error error"></div>
+            <form id="add-purchase-form">
+                <div class="form-row sale-purchase">
                     <div class="form-block">
                         <label for="invoice_no">Invoice No</label>
                         <input type="text" name="invoice_no" id="invoice_no">
                     </div>
                     <div class="form-block">
                         <label for="supplier">Supplier</label>
-                        <select name="supplier" id="select" class="">
+                        <select name="supplier" class="supplier_name" id="select" class="">
                             <option value="">Select</option>
                             @foreach ($suppliers as $sup)
                                 <option value="{{$sup->id}}">{{$sup->name}}</option>
@@ -37,7 +47,7 @@
                 @endphp
                 <input type="hidden" name="products" value="{{$all_products}}" id="products">
                 <input type="hidden" name="products_code" value="{{$all_products_code}}" id="products_code">
-                <div class="select-products">
+                <div class="select-products purchase">
                     <table id="product-table">
                         <thead>
                             <tr>
@@ -50,7 +60,7 @@
                             </tr>
                         </thead>
                         <tbody class="products-body">
-                            <tr>
+                            {{-- <tr>
                                 <td class="product-sr">1</td>
                                 <td>
                                     <select class="select choose-product row_product" name="product">
@@ -64,7 +74,7 @@
                                 <td><input type="text" class="row_cost" name="cost"></td>
                                 <td><input readonly type="text" class="row_total" name="total"></td>
                                 <td><i class="fa fa-times delete-row disabled"></i></td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>
@@ -80,7 +90,10 @@
                         <span>Total Amount</span> <span id="total-amount">0.00</span>
                     </div>
                 </div>
-                
+                <div class="sale-purchase-buttons">
+                    <button type="button" id="reset-rows" class="btn prev">Reset</button>
+                    <button type="" id="proceed-details" class="btn">Proceed</button>
+                </div>
             </form>
         </div>
     </div>

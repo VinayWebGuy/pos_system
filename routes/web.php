@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,4 +62,6 @@ Route::group(['middleware'=>'loginauth'],function(){
 
     // Ajax
     Route::get('get-product-from-code', [ProductController::class, 'getProductFromCode']);
+    Route::post('save-purchase', [PurchaseController::class, 'savePurchase']);
+    Route::post('save-sale', [SaleController::class, 'saveSale']);
 });

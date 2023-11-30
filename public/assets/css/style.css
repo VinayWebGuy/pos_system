@@ -490,6 +490,14 @@ input[type="file"] {
     width: 100%;
     overflow-x: auto;
 }
+.select-products::-webkit-scrollbar {
+    width: 0; 
+    height: 0;
+}
+
+.select-products::-webkit-scrollbar-thumb {
+    display: none;
+}
 .select-products table {
     width: 100%;
 }
@@ -500,7 +508,11 @@ input[type="file"] {
 }
 .select-products th, .select-products td {
  text-align: left;
- width: 14%;
+ width: 182px;
+}
+.select-products.sale th, .select-products td {
+ text-align: left;
+ width: 100px;
 }
 .select-products select, .select-products input {
     padding: 4px 8px;
@@ -515,16 +527,19 @@ input[type="file"] {
     margin-bottom: 10px;
 }
 .select-products td:first-child, .select-products td:last-child {
-    width: 4%;
+    width: 52px
 }
 .select-products td:nth-child(2) {
-    width: 30%;
+    width: 350px;
+}
+.select-products.sale td:nth-child(2) {
+    width: 250px;
 }
 .product-sr {
     font-size: 1.1rem;
     text-align: center;
 }
-#add-row {
+#add-row, #add-row-sale {
     color: var(--clr);
     cursor: pointer;
     font-size: 1.2rem;
@@ -559,6 +574,23 @@ input[type="file"] {
     font-weight: 800;
     text-align: center;
 }
+.sale-purchase-buttons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.sale-purchase-buttons button {
+    font-size: 1.1rem;
+}
+.sale-purchase-buttons button[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+}
+.sale-purchase-error {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
 
 @media screen and (max-width: 990px) {
     main {
@@ -587,6 +619,38 @@ input[type="file"] {
     header .shop-name {
         display: none;
     }
+    input, select, .ss-single, textarea {
+        font-size: .9rem;
+    }
+    .sale-purchase.form-row {
+        flex-wrap: wrap;
+    }
+    .summary {
+        flex-wrap: wrap;
+    }
+
+
+    .select-products th, .select-products td {
+        width: 112px;
+       }
+       .select-products.sale th, .select-products td {
+        width: 90px;
+       }
+       .select-products select, .select-products input {
+           width: 80%;
+       }
+       .select-products td:first-child, .select-products td:last-child {
+           width: 28px
+       }
+       .select-products td:nth-child(2) {
+           width: 200px;
+       }
+       .select-products.sale td:nth-child(2) {
+           width: 180px;
+       }
+       .product-sr {
+           font-size: 1rem;
+       }
 }
 
 
