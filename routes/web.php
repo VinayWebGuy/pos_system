@@ -37,7 +37,6 @@ Route::group(['middleware'=>'loginauth'],function(){
     Route::get('product/{action}/{id?}', [HomeController::class, 'manageProduct']);
     Route::get('purchase/{action}/{id?}', [HomeController::class, 'managePurchase']);
     Route::get('sale/{action}/{id?}', [HomeController::class, 'manageSale']);
-    Route::get('stock/{action}/{id?}', [HomeController::class, 'manageStock']);
     Route::get('report', [HomeController::class, 'manageReport']);
     Route::get('supplier/{action}/{id?}', [HomeController::class, 'manageSupplier']);
     Route::get('account', [HomeController::class, 'manageAccount']);
@@ -64,4 +63,10 @@ Route::group(['middleware'=>'loginauth'],function(){
     Route::get('get-product-from-code', [ProductController::class, 'getProductFromCode']);
     Route::post('save-purchase', [PurchaseController::class, 'savePurchase']);
     Route::post('save-sale', [SaleController::class, 'saveSale']);
+    
+    Route::post('update-purchase', [PurchaseController::class, 'updatePurchase']);
+    Route::post('update-sale', [SaleController::class, 'updateSale']);
+
+Route::post('delete-purchase', [PurchaseController::class, 'deletePurchase']);
+Route::post('delete-sale', [SaleController::class, 'deleteSale']);
 });

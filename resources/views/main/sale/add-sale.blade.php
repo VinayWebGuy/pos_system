@@ -50,7 +50,7 @@
                                 <td>Product</td>
                                 <td>Quantity</td>
                                 <td>Cost</td>
-                                <td>Discount type</td>
+                                <td>D. type</td>
                                 <td>Discount</td>
                                 <td>Total</td>
                                 <td><i class="fa fa-plus" id="add-row-sale"></i></td>

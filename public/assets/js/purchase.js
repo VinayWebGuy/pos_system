@@ -7,10 +7,15 @@ function updateButtonStates() {
         $('#reset-rows, #proceed-details').prop('disabled', false);
     }
 }
-function addNewRow() {
+function addNewRow(update = "") {
     let data = getProducts();
     let code = getProductsCode();
     let $products = "";
+
+    let link = '<a target="_blank" href="../product/add">Add new</a>';
+    if(update!="") {
+        link = '<a target="_blank" href="../../product/add">Add new</a>';
+    }
 
     for (let i = 0; i < data.length; i++) {
         if (data[i] !== "") { // Avoid adding empty options
@@ -19,17 +24,18 @@ function addNewRow() {
     }
 
     let html = `<tr>
-        <td class="product-sr">${rowIndex}</td>
-        <td>
-            <select class="row_product select choose-product" name="product[]">
-                <option value="">Choose Product</option>
-                ${$products}
-            </select>
-        </td>
-        <td><input class="row_quantity" type="text" name="quantity[]"></td>
-        <td><input class="row_cost" type="text" name="cost[]"></td>
-        <td><input readonly class="row_total" type="text" name="total[]"></td>
-        <td><i class="fa fa-times delete-row"></i></td>
+    <td class="product-sr"><span>${rowIndexSale}</span> <div class="block-el"></div></td>
+    <td>
+        <select class="row_product select choose-product" name="product[]">
+            <option value="">Choose Product</option>
+            ${$products}
+        </select><div class="block-el">${link}</div>
+    </td>
+    <td><input class="row_quantity" type="text" name="quantity[]"><div class="block-el"></div></td>
+    <td><input class="row_cost" type="text" name="cost[]"><div class="block-el"></div></td>
+    
+    <td><input readonly class="row_total" type="text" name="total[]"><div class="block-el"></div></td>
+    <td><i class="fa fa-times delete-row"></i><div class="block-el"></div></td>
     </tr>`;
 
     $('.products-body').append(html);
@@ -52,9 +58,17 @@ $('.select-products.purchase').keydown(function (e) {
         addNewRow();
     }
 });
+$('.select-products.purchase-update').keydown(function (e) {
+    if (e.ctrlKey && e.key === 'i') {
+        addNewRow("update");
+    }
+});
 
 $('#add-row').click(function () {
     addNewRow();
+});
+$('#add-row-update').click(function () {
+    addNewRow("update");
 });
 
 $(document).ready(function () {
@@ -74,10 +88,10 @@ $(document).ready(function () {
         $('.delete-modal').removeClass('active');
     });
     $('#confirm-delete').click(function () {
-        $('.products-body').empty(); 
-        updateSummarySale(); 
         $('.backdrop').removeClass('active');
         $('.delete-modal').removeClass('active');
+        $('.products-body').empty(); 
+        updateSummarySale(); 
         updateButtonStates();
     });
 
@@ -116,12 +130,16 @@ function getProductData() {
             data: { code: code },
             url: '../../get-product-from-code',
             success: function (response) {
-                $currentRow.find('.row_cost').val(response.product.buying_price || 0);
-                
-                // Hide the "Choose Product" option after an option is selected
-                $currentRow.find('.row_product option[value=""]').hide();
-                $currentRow.find('.row_quantity').trigger('input');
-                $('.data').removeClass('load')
+                if(response.product != null) {
+                    $currentRow.find('.row_cost').val(response.product.buying_price || 0);
+                    $currentRow.find('.row_product option[value=""]').hide();
+                    $currentRow.find('.row_quantity').trigger('input');
+                    $('.data').removeClass('load')
+                }
+                else {
+                    $('.data').removeClass('load')
+                }
+               
             }
         });
     });
@@ -218,20 +236,24 @@ $('#add-purchase-form').on('submit', function (e) {
     if (!validateInputs()) {
         return false;
     }
-
+    $('.toast-notification').removeClass('open')
+    $('.success-toast-msg').html("")
+    
     let formData = $(this).serializeArray().filter(function(input) {
         return input.name !== "products" && input.name !== "products_code";
     });
-
-    // Extract total products, total quantity, and total amount from summary
     let totalProducts = $('#total-products').text();
     let totalQuantity = $('#total-quantity').text();
     let totalAmount = $('#total-amount').text();
 
-    // Add extracted values to formData
     formData.push({ name: 'totalProducts', value: totalProducts });
     formData.push({ name: 'totalQuantity', value: totalQuantity });
     formData.push({ name: 'totalAmount', value: totalAmount });
+
+    $('.row_product option:selected').each(function() {
+        let optionName = $(this).text();
+        formData.push({ name: 'product_name[]', value: optionName }); 
+    });
 
     $('.data').addClass('load');
 
@@ -246,14 +268,80 @@ $('#add-purchase-form').on('submit', function (e) {
         url: '../save-purchase',
         data: $.param(formData),
         success: function (response) {
-            console.log(response);
+
+
+            $('.products-body').empty(); 
+            updateSummarySale(); 
+            updateButtonStates();
+            $('#add-purchase-form')[0].reset();
             $('.data').removeClass('load');
+            $('.toast-notification.success').addClass('open')
+            $('.success-toast-msg').html(response.msg)
+            resetStateSelect();
         },
         error: function (error) {
             // Handle error
         }
     });
 });
+
+
+
+$('#update-purchase-form').on('submit', function (e) {
+    e.preventDefault();
+    if (!validateInputs()) {
+        return false;
+    }
+    $('.toast-notification').removeClass('open')
+    $('.success-toast-msg').html("")
+    
+    let formData = $(this).serializeArray().filter(function(input) {
+        return input.name !== "products" && input.name !== "products_code";
+    });
+    let totalProducts = $('#total-products').text();
+    let totalQuantity = $('#total-quantity').text();
+    let totalAmount = $('#total-amount').text();
+
+    formData.push({ name: 'totalProducts', value: totalProducts });
+    formData.push({ name: 'totalQuantity', value: totalQuantity });
+    formData.push({ name: 'totalAmount', value: totalAmount });
+
+    $('.row_product option:selected').each(function() {
+        let optionName = $(this).text();
+        formData.push({ name: 'product_name[]', value: optionName }); 
+    });
+
+    $('.data').addClass('load');
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '../../update-purchase',
+        data: $.param(formData),
+        success: function (response) {
+
+
+            $('.products-body').empty(); 
+            updateSummarySale(); 
+            updateButtonStates();
+            $('#update-purchase-form')[0].reset();
+            $('.data').removeClass('load');
+            $('.toast-notification.success').addClass('open')
+            $('.success-toast-msg').html(response.msg)
+            resetStateSelect();
+        },
+        error: function (error) {
+            // Handle error
+        }
+    });
+});
+
+
 
 
 

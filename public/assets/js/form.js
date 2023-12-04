@@ -31,6 +31,7 @@ $('#category-form').on('submit', function (e) {
                 $('.toast-notification.success').addClass('open')
                 $('.success-toast-msg').html(response.msg)
                 $('#category-form')[0].reset();
+                resetStateSelect();
             }
             else {
                 $('#error-msg').html(response.msg);
@@ -69,6 +70,7 @@ $('#update-category-form').on('submit', function (e) {
             if (response.success == true) {
                 $('.toast-notification.success').addClass('open')
                 $('.success-toast-msg').html(response.msg)
+                resetStateSelect();
             }
             else {
                 $('#error-msg').html(response.msg);
@@ -161,6 +163,7 @@ function processCategoryDelete(id) {
 $('#product-form').on('submit', function (e) {
     e.preventDefault();
     $('#name-error').html('');
+    $('#error-msg').html('');
     $('#quantity-error').html('');
     $('#quantity-error').html('');
     $('#buying_price-error').html('');
@@ -224,6 +227,7 @@ $('#product-form').on('submit', function (e) {
                 $('.success-toast-msg').html(response.msg)
                 $('#product-form')[0].reset();
                 $('.img-preview-container').html('')
+                resetStateSelect();
             }
             else {
                 $('#error-msg').html(response.msg);
@@ -302,6 +306,7 @@ $('#update-product-form').on('submit', function (e) {
             if (response.success == true) {
                 $('.toast-notification.success').addClass('open')
                 $('.success-toast-msg').html(response.msg)
+                resetStateSelect();
             }
             else {
                 $('#error-msg').html(response.msg);
@@ -420,13 +425,13 @@ function processProductDelete(id) {
     })
 }
 // Edit Category
-$('.edit-category').click(function () {
+$(document).on('click', '.edit-category', function () {
     let code = $(this).attr('data-code');
     let link = `edit/${code}`
     window.open(link)
 })
 // Edit Product
-$('.edit-product').click(function () {
+$(document).on('click', '.edit-product', function () {
     let code = $(this).attr('data-code');
     let link = `edit/${code}`
     window.open(link)
@@ -472,6 +477,7 @@ $('#supplier-form').on('submit', function (e) {
                 $('.toast-notification.success').addClass('open')
                 $('.success-toast-msg').html(response.msg)
                 $('#supplier-form')[0].reset();
+                resetStateSelect();
             }
             else {
                 $('#error-msg').html(response.msg);
@@ -559,7 +565,7 @@ function processSupplierDelete(id) {
         }
     })
 }
-$('.edit-supplier').click(function () {
+$(document).on('click', '.edit-supplier', function () {
     let code = $(this).attr('data-code');
     let link = `edit/${code}`
     window.open(link)
@@ -604,6 +610,7 @@ $('#update-supplier-form').on('submit', function (e) {
             if (response.success == true) {
                 $('.toast-notification.success').addClass('open')
                 $('.success-toast-msg').html(response.msg)
+                resetStateSelect();
             }
             else {
                 $('#error-msg').html(response.msg);
@@ -617,3 +624,106 @@ $('#update-supplier-form').on('submit', function (e) {
 })
 
 
+
+$(document).on('click', '.delete-purchase', function () {
+    let id = $(this).attr('data-id')
+    $('#error-msg').html('');
+    $('.toast-notification').removeClass('open')
+    $('.delete-modal').addClass('active')
+    $('.backdrop').addClass('active')
+    $('.success-toast-msg').html("")
+    $('#confirm-delete').off('click').on('click', function () {
+        $('.delete-modal').removeClass('active');
+        $('.backdrop').removeClass('active');
+        processPurchaseDelete(id);
+    });
+    $('#cancel-delete').off('click').on('click', function () {
+        $('.delete-modal').removeClass('active');
+        $('.backdrop').removeClass('active');
+    });
+})
+
+function processPurchaseDelete(id) {
+    $('.data').addClass('load')
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        cache: false,
+        data: { id: id },
+        url: '../delete-purchase',
+        success: function (response) {
+            if (response.success == true) {
+                $('.toast-notification.success').addClass('open')
+                $('.success-toast-msg').html(response.msg)
+                var table = $('#myTable').DataTable();
+                var row = $(`#row-${id}`).get(0);
+                table.row(row).remove().draw(false);
+            }
+            $('.data').removeClass('load')
+        },
+        error: function (error) {
+            $('.data').removeClass('load')
+        }
+    })
+}
+
+$(document).on('click', '.delete-sale', function () {
+    let id = $(this).attr('data-id')
+    $('#error-msg').html('');
+    $('.toast-notification').removeClass('open')
+    $('.delete-modal').addClass('active')
+    $('.backdrop').addClass('active')
+    $('.success-toast-msg').html("")
+    $('#confirm-delete').off('click').on('click', function () {
+        $('.delete-modal').removeClass('active');
+        $('.backdrop').removeClass('active');
+        processSaleDelete(id);
+    });
+    $('#cancel-delete').off('click').on('click', function () {
+        $('.delete-modal').removeClass('active');
+        $('.backdrop').removeClass('active');
+    });
+})
+
+function processSaleDelete(id) {
+    $('.data').addClass('load')
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        cache: false,
+        data: { id: id },
+        url: '../delete-sale',
+        success: function (response) {
+            if (response.success == true) {
+                $('.toast-notification.success').addClass('open')
+                $('.success-toast-msg').html(response.msg)
+                var table = $('#myTable').DataTable();
+                var row = $(`#row-${id}`).get(0);
+                table.row(row).remove().draw(false);
+            }
+            $('.data').removeClass('load')
+        },
+        error: function (error) {
+            $('.data').removeClass('load')
+        }
+    })
+}
+
+$(document).on('click', '.edit-purchase', function () {
+    let code = $(this).attr('data-code');
+    let link = `edit/${code}`
+    window.open(link)
+})
+$(document).on('click', '.edit-sale', function () {
+    let code = $(this).attr('data-code');
+    let link = `edit/${code}`
+    window.open(link)
+})

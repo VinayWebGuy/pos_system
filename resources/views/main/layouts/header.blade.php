@@ -45,10 +45,7 @@
                 </a>
                 <a href="{{url('/sale/add')}}" class="menu-item @yield('sale')">
                     <i class="fa-solid fa-file-invoice"></i> <span>Sale</span>
-                </a>
-                <a href="{{url('/stock/add')}}" class="menu-item @yield('stock')">
-                    <i class="fa-solid fa-boxes-stacked"></i> <span>Stock</span>
-                </a>
+                </a>    
                 <a href="{{url('/report')}}" class="menu-item @yield('report')">
                     <i class="fa-solid fa-file"></i> <span>Report</span>
                 </a>

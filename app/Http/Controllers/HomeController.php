@@ -5,7 +5,10 @@ use App\Models\Setup;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
+use App\Models\Purchase;
+use App\Models\Sale;
 use Session;
+use DB;
 
 
 
@@ -69,7 +72,7 @@ class HomeController extends Controller
     }
     public function manageCategory($action, $id="") {
         if($action == "all") {
-            $category = Category::orderBy('name', 'ASC')->paginate(15);
+            $category = Category::orderBy('name', 'ASC')->get();
             return view('main.category.all-category', compact('category'));
         }
         else if($action == "add") {
@@ -83,7 +86,7 @@ class HomeController extends Controller
     public function manageProduct($action, $id="") {
         if($action == "all") {
             $check = Setup::first();
-            $products = Product::orderBy('name', 'ASC')->paginate(15);
+            $products = Product::orderBy('name', 'ASC')->get();
             return view('main.product.all-product', compact('products', 'check'));
         }
         else if($action == "add") {
@@ -98,37 +101,76 @@ class HomeController extends Controller
     }
     public function managePurchase($action, $id="") {
         if($action == "all") {
-            return view('main.purchase.all-purchase');
+            $purchase = Purchase::join('suppliers', 'purchase.supplier', '=', 'suppliers.id')
+            ->select('purchase.unique_id', DB::raw('MAX(purchase.invoice_no) AS invoice_no'), DB::raw('MAX(suppliers.name) AS name'), DB::raw('MAX(purchase.total_cost) AS total_cost'), DB::raw('MAX(purchase.date) AS date'))
+            ->groupBy('purchase.unique_id')
+            ->get();
+            return view('main.purchase.all-purchase', compact('purchase'));
+        }
+        else if($action == "view" && $id!="") {
+            $purchase = Purchase::where('purchase.unique_id', $id)->join('suppliers', 'purchase.supplier', '=', 'suppliers.id')->get();
+            if(count($purchase) > 0) { 
+                return view('main.purchase.view-purchase', compact('purchase'));
+            }
+            else {
+                return redirect()->back();
+            }
         }
         else if($action == "add") {
             $suppliers = Supplier::orderBy('name', 'ASC')->where('status', 1)->get();
             $products = Product::orderBy('name', 'ASC')->where('status', 1)->get();
             return view('main.purchase.add-purchase', compact('suppliers', 'products'));
         }
+        else if($action == "edit" && $id!="") {
+            $suppliers = Supplier::orderBy('name', 'ASC')->where('status', 1)->get();
+            $products = Product::orderBy('name', 'ASC')->where('status', 1)->get();
+            $purchase = Purchase::where('unique_id', $id)->get();
+            if(count($purchase) > 0) { 
+                return view('main.purchase.edit-purchase', compact('suppliers', 'products', 'purchase'));
+            }
+            else {
+                return redirect()->back();
+            }
+        }
     }
     public function manageSale($action, $id="") {
         if($action == "all") {
-            return view('main.sale.all-sale');
+            $sale = Sale::select('sale.unique_id', DB::raw('MAX(sale.invoice_no) AS invoice_no'), DB::raw('MAX(customer) AS customer'), DB::raw('MAX(sale.total_cost) AS total_cost'), DB::raw('MAX(sale.date) AS date'))
+            ->groupBy('sale.unique_id')
+            ->get();
+            return view('main.sale.all-sale', compact('sale'));
+        }
+        else if($action == "view" && $id!="") {
+            $sale = Sale::where('sale.unique_id', $id)->get();
+            if(count($sale) > 0) {
+                return view('main.sale.view-sale', compact('sale'));
+            }
+            else {
+                return redirect()->back();
+            }
         }
         else if($action == "add") {
             $products = Product::orderBy('name', 'ASC')->where('status', 1)->get();
             return view('main.sale.add-sale', compact('products'));
         }
-    }
-    public function manageStock($action, $id="") {
-        if($action == "all") {
-            return view('main.stock.all-stock');
+        else if($action == "edit" && $id!="") {
+            $products = Product::orderBy('name', 'ASC')->where('status', 1)->get();
+            $sale = Sale::where('unique_id', $id)->get();
+            if(count($sale) > 0) {
+                 return view('main.sale.edit-sale', compact('products', 'sale'));
+            }
+            else {
+                return redirect()->back();
+            }
         }
-        else if($action == "add") {
-            return view('main.stock.add-stock');
-        }
     }
+
     public function manageReport() {
        return view('main.report');
     }
     public function manageSupplier($action, $id="") {
         if($action == "all") {
-            $suppliers = Supplier::orderBy('name', 'ASC')->paginate(15);
+            $suppliers = Supplier::orderBy('name', 'ASC')->get();
             return view('main.supplier.all-supplier', compact('suppliers'));
         }
         else if($action == "add") {

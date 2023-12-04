@@ -7,10 +7,16 @@ function updateButtonStates() {
         $('#reset-rows, #proceed-details').prop('disabled', false);
     }
 }
-function addNewRowSale() {
+function addNewRowSale(update = "") {
     let data = getProductsSale();
     let code = getProductsSaleCode();
     let $products = "";
+
+
+    let link = '<a target="_blank" href="../product/add">Add new</a>';
+    if(update!="") {
+        link = '<a target="_blank" href="../../product/add">Add new</a>';
+    }
 
     for (let i = 0; i < data.length; i++) {
         if (data[i] !== "") { // Avoid adding empty options
@@ -19,20 +25,20 @@ function addNewRowSale() {
     }
 
     let html = `<tr>
-        <td class="product-sr">${rowIndexSale}</td>
+        <td class="product-sr"><span>${rowIndexSale}</span> <div class="block-el"></div></td>
         <td>
             <select class="row_product select choose-product" name="product[]">
                 <option value="">Choose Product</option>
                 ${$products}
-            </select>
+            </select><div class="block-el">${link}</div>
         </td>
-        <td><input class="row_quantity" type="text" name="quantity[]"></td>
-        <td><input class="row_cost" type="text" name="cost[]"></td>
-        <td><select name="discount_type[]" class="row_discount_type"><option value="">Choose</option><option value="fixed">F</option><option value="percent">P</option></select></td>
-        <td><input class="row_discount" type="text" name="discount[]"></td>
+        <td><input class="row_quantity" type="text" name="quantity[]"><div class="block-el"><i>Stock: <span class="current_stock"></span></i></div></td>
+        <td><input class="row_cost" type="text" name="cost[]"><div class="block-el"></div></td>
+        <td><select name="discount_type[]" class="row_discount_type"><option value="">Choose</option><option value="fixed">F</option><option value="percent">P</option></select><div class="block-el"></div></td>
+        <td><input class="row_discount" type="text" name="discount[]"><div class="block-el"></div></td>
         
-        <td><input readonly class="row_total" type="text" name="total[]"></td>
-        <td><i class="fa fa-times delete-row"></i></td>
+        <td><input readonly class="row_total" type="text" name="total[]"><div class="block-el"></div></td>
+        <td><i class="fa fa-times delete-row"></i><div class="block-el"></div></td>
     </tr>`;
 
     $('.products-body').append(html);
@@ -55,9 +61,17 @@ $('.select-products.sale').keydown(function (e) {
         addNewRowSale();
     }
 });
+$('.select-products.sale-update').keydown(function (e) {
+    if (e.ctrlKey && e.key === 'i') {
+        addNewRowSale("update");
+    }
+});
 
 $('#add-row-sale').click(function () {
     addNewRowSale();
+});
+$('#add-row-sale-update').click(function () {
+    addNewRowSale("update");
 });
 
 $(document).ready(function () {
@@ -92,7 +106,7 @@ $(document).ready(function () {
 
 function updateSerialNumbersSale() {
     $('.products-body tr').each(function (index) {
-        $(this).find('.product-sr').text(index + 1);
+        $(this).find('.product-sr span').text(index + 1);
     });
 }
 
@@ -120,16 +134,25 @@ function getProductDataSale() {
             data: { code: code },
             url: '../../get-product-from-code',
             success: function (response) {
-                console.log(response.product.discount_type)
-                $currentRow.find('.row_cost').val(response.product.selling_price || 0);
-                $currentRow.find('.row_discount').val(response.product.discount || 0);
+                if(response.product != null) {
+                    console.log(response.product.selling_price);
+                    $currentRow.find('.row_cost').val(response.product.selling_price || 0);
+                    $currentRow.find('.row_discount').val(response.product.discount || 0);
+                    
+                    let discountType = response.product.discount_type || '';
+                    $currentRow.find('.row_discount_type').val(discountType); 
+    
+                    let stock = response.product.quantity || 0;
+                    $currentRow.find('.current_stock').html(stock);
+    
+                    $currentRow.find('.row_product option[value=""]').hide();
+                    $currentRow.find('.row_quantity').trigger('input');
+                    $('.data').removeClass('load')
+                }
+                else {
+                    $('.data').removeClass('load')
+                }
                 
-                let discountType = response.product.discount_type || '';
-                $currentRow.find('.row_discount_type').val(discountType); 
-
-                $currentRow.find('.row_product option[value=""]').hide();
-                $currentRow.find('.row_quantity').trigger('input');
-                $('.data').removeClass('load')
             }
         });
     });
@@ -150,7 +173,6 @@ function calculateRowTotalSale() {
             let discount = parseFloat($currentRow.find('.row_discount').val()) || 0;
             let total = 0;
 
-            // Calculate total based on discount type
             let discountType = $currentRow.find('.row_discount_type').val();
             if (discountType === 'fixed') {
                 total = (cost * quantity) - discount;
@@ -164,7 +186,7 @@ function calculateRowTotalSale() {
             $currentRow.find('.row_total').val(total.toFixed(2));
             updateSummarySale();
             $('.data').removeClass('load');
-        }, 500); // Adjust the delay time (in milliseconds) as needed
+        }, 500);
     });
 }
 
@@ -191,17 +213,32 @@ function updateSummarySale() {
     calculateRowTotalSale();
 }
 
-
+function getProductQuantity(code) {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: "GET",
+            cache: false,
+            data: { code: code },
+            url: "../get-product-from-code",
+            success: function(response) {
+                resolve(response.product.quantity);
+            },
+            error: function(error) {
+                reject(error);
+            }
+        });
+    });
+}
 function validateInputs() {
     let isValid = true;
 
     let invoiceNo = $('#invoice_no').val();
-    let supplier = $('#customer_name').val();
+    let customer_name = $('#customer_name').val();
     let date = $('#date').val();
 
-    if (invoiceNo === '' || supplier === '' || date === '') {
+    if (invoiceNo === '' || customer_name === '' || date === '') {
         if (invoiceNo === '') $('#invoice_no').css('border-color', 'red');
-        if (supplier === '') $('#customer_name').css('border-color', 'red');
+        if (customer_name === '') $('#customer_name').css('border-color', 'red');
         if (date === '') $('#date').css('border-color', 'red');
         
         isValid = false;
@@ -225,6 +262,7 @@ function validateInputs() {
         } else {
             $row.find('.row_product, .row_quantity, .row_cost').css('border-color', '');
         }
+      
     });
 
     if (!isValid) {
@@ -239,19 +277,24 @@ $('#add-sale-form').on('submit', function (e) {
     if (!validateInputs()) {
         return false;
     }
+    $('.toast-notification').removeClass('open')
+    $('.success-toast-msg').html("")
+    
     let formData = $(this).serializeArray().filter(function(input) {
         return input.name !== "products" && input.name !== "products_code";
     });
-
-    // Extract total products, total quantity, and total amount from summary
     let totalProducts = $('#total-products').text();
     let totalQuantity = $('#total-quantity').text();
     let totalAmount = $('#total-amount').text();
 
-    // Add extracted values to formData
     formData.push({ name: 'totalProducts', value: totalProducts });
     formData.push({ name: 'totalQuantity', value: totalQuantity });
     formData.push({ name: 'totalAmount', value: totalAmount });
+
+    $('.row_product option:selected').each(function() {
+        let optionName = $(this).text();
+        formData.push({ name: 'product_name[]', value: optionName }); 
+    });
 
     $('.data').addClass('load');
 
@@ -266,12 +309,74 @@ $('#add-sale-form').on('submit', function (e) {
         url: '../save-sale',
         data: $.param(formData),
         success: function (response) {
-            console.log(response);
+            $('.products-body').empty(); 
+            updateSummarySale(); 
+            updateButtonStates();
+
+
+            $('#add-sale-form')[0].reset();
             $('.data').removeClass('load');
+            $('.toast-notification.success').addClass('open')
+            $('.success-toast-msg').html(response.msg)
+            resetStateSelect();
         },
         error: function (error) {
             // Handle error
         }
     });
+});
+
+
+$('#update-sale-form').on('submit', function (e) {
+    e.preventDefault();
+    if (!validateInputs()) {
+        return false;
+    }
+    $('.toast-notification').removeClass('open')
+    $('.success-toast-msg').html("")
     
+    let formData = $(this).serializeArray().filter(function(input) {
+        return input.name !== "products" && input.name !== "products_code";
+    });
+    let totalProducts = $('#total-products').text();
+    let totalQuantity = $('#total-quantity').text();
+    let totalAmount = $('#total-amount').text();
+
+    formData.push({ name: 'totalProducts', value: totalProducts });
+    formData.push({ name: 'totalQuantity', value: totalQuantity });
+    formData.push({ name: 'totalAmount', value: totalAmount });
+
+    $('.row_product option:selected').each(function() {
+        let optionName = $(this).text();
+        formData.push({ name: 'product_name[]', value: optionName }); 
+    });
+
+    $('.data').addClass('load');
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '../../update-sale',
+        data: $.param(formData),
+        success: function (response) {
+            $('.products-body').empty(); 
+            updateSummarySale(); 
+            updateButtonStates();
+
+
+            $('#update-sale-form')[0].reset();
+            $('.data').removeClass('load');
+            $('.toast-notification.success').addClass('open')
+            $('.success-toast-msg').html(response.msg)
+            resetStateSelect();
+        },
+        error: function (error) {
+            // Handle error
+        }
+    });
 });

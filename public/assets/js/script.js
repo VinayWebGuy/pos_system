@@ -1,11 +1,19 @@
-new SlimSelect({
-    select: '#select'
+let slim1 = new SlimSelect({
+    select: '#select',
+  settings: {
+    hideSelected: true,
+  }
 })
 document.addEventListener('DOMContentLoaded', function () {
-    new SlimSelect({
-        select: '.select'
+    let slim2 = new SlimSelect({
+        select: '.select',
+  settings: {
+    hideSelected: true,
+  }
     });
 });
+
+
 
 $('.nextBtn').click(function () {
     let next = $(this).attr('data-next');
@@ -95,3 +103,13 @@ $(document).ready(function () {
         $('.backdrop').removeClass('active')
     })
 });
+
+$('.view-purchase').click(function () {
+    let uid = $(this).attr('data-id');
+    window.open('../purchase/view/'+uid)
+})
+$('.view-sale').click(function () {
+    let uid = $(this).attr('data-id');
+    window.open('../sale/view/'+uid)
+})
+
