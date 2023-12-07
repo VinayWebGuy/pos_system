@@ -3,6 +3,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Str;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductExport;
+
 class ProductController extends Controller
 {
     public function saveProduct(Request $req) {
@@ -120,8 +123,12 @@ class ProductController extends Controller
     public function getProductFromCode(Request $req) {
        $product = Product::where('unique_id', $req->code)->first();
        return response()->json([
-        'product' => $product
-    ]);
+            'product' => $product
+        ]);
+    }
+    public function exportProducts(Request $request)
+    {
+        return Excel::download(new ProductExport($request), 'products.xlsx');
     }
 
 

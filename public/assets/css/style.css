@@ -609,6 +609,35 @@ input[type="file"] {
     margin-top: 2px;
 }
 
+.single-report {
+    border-bottom: 1px dashed var(--clr);
+    padding: 15px 0;
+}
+.report-heading {
+    font-size: 1.1rem;
+    color: var(--clr);
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+.report-filters {
+    margin: 6px 0;
+}
+.report-filters input {
+    margin-right: 7px;
+}
+.report-filters label {
+    cursor: pointer;
+    user-select: none;
+}
+.purchase-date-filter, .sale-date-filter {
+    display: none;
+    margin-top: 7px;
+}
+.purchase-date-filter.on, .sale-date-filter.on {
+    display: block;
+}
+
+
 
 @media screen and (max-width: 990px) {
     main {

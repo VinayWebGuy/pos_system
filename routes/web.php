@@ -67,6 +67,11 @@ Route::group(['middleware'=>'loginauth'],function(){
     Route::post('update-purchase', [PurchaseController::class, 'updatePurchase']);
     Route::post('update-sale', [SaleController::class, 'updateSale']);
 
-Route::post('delete-purchase', [PurchaseController::class, 'deletePurchase']);
-Route::post('delete-sale', [SaleController::class, 'deleteSale']);
+    Route::post('delete-purchase', [PurchaseController::class, 'deletePurchase']);
+    Route::post('delete-sale', [SaleController::class, 'deleteSale']);
+
+
+    // Excel Export
+    Route::get('export-products', [ProductController::class, 'exportProducts']);
+
 });

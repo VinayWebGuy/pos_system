@@ -113,3 +113,50 @@ $('.view-sale').click(function () {
     window.open('../sale/view/'+uid)
 })
 
+$('.purchase_range').on('change', function() {
+    let val = $(this).val();
+    if(val == "date_range") {
+        $('.date-filter').addClass('on')
+    }
+    else {
+        
+        $('.date-filter').removeClass('on')
+    }
+});
+$('.purchase_range').on('change', function() {
+    let val = $(this).val();
+    if(val == "date_range") {
+        $('.purchase-date-filter').addClass('on')
+    }
+    else {
+        
+        $('.purchase-date-filter').removeClass('on')
+    }
+});
+$('.sale_range').on('change', function() {
+    let val = $(this).val();
+    if(val == "sale_date_range") {
+        $('.sale-date-filter').addClass('on')
+    }
+    else {
+        
+        $('.sale-date-filter').removeClass('on')
+    }
+});
+
+
+
+
+$(document).ready(function() {
+    $('#product-report-download').click(function(e) {
+        e.preventDefault(); 
+        var noStock = $('#no_stock').is(':checked');
+        var withoutCategory = $('#without_category').is(':checked');
+        var url = '/export-products?no_stock=' + noStock + '&without_category=' + withoutCategory;
+        window.location.href = url;
+        setTimeout(function() {
+            $('#no_stock').prop('checked', false);
+            $('#without_category').prop('checked', false);
+        }, 1000);
+    });
+});
