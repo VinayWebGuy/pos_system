@@ -34,6 +34,10 @@
             <button class="btn" id="category-report-download">Download <i class="fa fa-download"></i></button>
         </div>
         <div class="single-report">
+            <div class="report-heading">Supplier</div>
+            <button class="btn" id="supplier-report-download">Download <i class="fa fa-download"></i></button>
+        </div>
+        {{-- <div class="single-report">
             <div class="report-heading">Purchase</div>
             <div class="purchase-filter report-filters">
                 <div class="filter">
@@ -84,7 +88,7 @@
                 </div>
             </div>
             <button class="btn" id="sale-report-download">Download <i class="fa fa-download"></i></button>
-        </div>
+        </div> --}}
     </div>
 
 @endsection

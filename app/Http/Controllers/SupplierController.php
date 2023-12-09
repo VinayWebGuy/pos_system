@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Supplier;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SupplierExport;
 
 class SupplierController extends Controller
 {
@@ -62,5 +64,8 @@ class SupplierController extends Controller
             $supplier->save();
             return response()->json(['success' => true, 'msg' => 'Supplier updated successfully']); 
         }
+    }
+    public function exportSupplier(Request $request) {
+        return Excel::download(new SupplierExport($request), 'supplier.xlsx');
     }
 }

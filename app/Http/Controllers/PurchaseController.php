@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Purchase;
 use App\Models\Product;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PurchaseExport;
 
 class PurchaseController extends Controller
 {
@@ -99,5 +101,9 @@ class PurchaseController extends Controller
             $p->save();
         }
         return response()->json(['success' => true, 'msg' => 'Purchase updated successfully']); 
+    }
+
+    public function exportPurchase(Request $request) {
+        return Excel::download(new PurchaseExport($request), 'purchase.xlsx');
     }
 }

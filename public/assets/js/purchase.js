@@ -26,7 +26,7 @@ function addNewRow(update = "") {
     let html = `<tr>
     <td class="product-sr"><span>${rowIndexSale}</span> <div class="block-el"></div></td>
     <td>
-        <select class="row_product select choose-product" name="product[]">
+        <select class="row_product choose-product" name="product[]">
             <option value="">Choose Product</option>
             ${$products}
         </select><div class="block-el">${link}</div>
@@ -48,7 +48,6 @@ function addNewRow(update = "") {
     });
 
     updateSerialNumbers();
-    getProductData();
     updateSummary();
     updateButtonStates();
 }
@@ -118,8 +117,8 @@ function getProductsCode() {
     return data;
 }
 
-function getProductData() {
-    $('.row_product').change(function () {
+
+$('.products-body').on('change', '.row_product', function () {
         $('.data').addClass('load')
         let $currentRow = $(this).closest('tr');
         let code = $(this).val();
@@ -143,29 +142,30 @@ function getProductData() {
             }
         });
     });
-}
 
 
 
-function calculateRowTotal() {
-    let timer;
-    $('.products-body').on('change', '.row_quantity, .row_cost', function () {
-      clearTimeout(timer);
-      let $currentRow = $(this).closest('tr');
-      $('.data').addClass('load');
-  
-      timer = setTimeout(() => {
-        let cost = parseFloat($currentRow.find('.row_cost').val()) || 0;
-        let quantity = parseFloat($currentRow.find('.row_quantity').val()) || 0;
-        let total = cost * quantity;
-  
-        $currentRow.find('.row_total').val(total.toFixed(2));
-        updateSummary();
-        $('.data').removeClass('load');
-      }, 500); // Adjust the delay time (in milliseconds) as needed
-    });
-  }
-  
+    function calculateRowTotal() {
+        let calculationTimeout;
+        
+        $('.products-body').on('input', '.row_quantity, .row_cost', function () {
+            clearTimeout(calculationTimeout);
+    
+            let $currentRow = $(this).closest('tr');
+            $('.data').addClass('load');
+    
+            calculationTimeout = setTimeout(() => {
+                let cost = parseFloat($currentRow.find('.row_cost').val()) || 0;
+                let quantity = parseFloat($currentRow.find('.row_quantity').val()) || 0;
+                let total = cost * quantity;
+    
+                $currentRow.find('.row_total').val(total.toFixed(2));
+                updateSummary();
+                $('.data').removeClass('load');
+            }, 300); // Adjust the delay time (in milliseconds) as needed
+        });
+    }
+    
   
 
 function updateSummary() {

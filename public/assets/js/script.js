@@ -1,20 +1,17 @@
 let slim1 = new SlimSelect({
     select: '#select',
-  settings: {
-    hideSelected: true,
-  }
+    settings: {
+        hideSelected: true,
+    }
 })
 document.addEventListener('DOMContentLoaded', function () {
     let slim2 = new SlimSelect({
         select: '.select',
-  settings: {
-    hideSelected: true,
-  }
+        settings: {
+            hideSelected: true,
+        }
     });
 });
-
-
-
 $('.nextBtn').click(function () {
     let next = $(this).attr('data-next');
     let res = validate(next)
@@ -33,7 +30,6 @@ $('.prevBtn').click(function () {
     $(`.${prev}`).addClass('active');
     $(`.${prev}-heading`).addClass('active');
 })
-
 function validate(page) {
     let pass = false;
     if (page === "profile-details") {
@@ -57,7 +53,6 @@ function validate(page) {
     }
     return pass;
 }
-
 $('#toggleBar').click(function () {
     $('main').toggleClass('collapsed');
 })
@@ -79,10 +74,6 @@ $('#files').on('change', function (event) {
         }
     }
 });
-
-
-
-
 $(document).ready(function () {
     function toggleSidebarClass() {
         if ($(window).width() >= 1000) {
@@ -96,67 +87,67 @@ $(document).ready(function () {
     });
     toggleSidebarClass();
 });
-
 $(document).ready(function () {
     $(document).on('click', '#ok-btn', function () {
         $('.notification-modal').removeClass('active')
         $('.backdrop').removeClass('active')
     })
 });
-
 $('.view-purchase').click(function () {
     let uid = $(this).attr('data-id');
-    window.open('../purchase/view/'+uid)
+    window.open('../purchase/view/' + uid)
 })
 $('.view-sale').click(function () {
     let uid = $(this).attr('data-id');
-    window.open('../sale/view/'+uid)
+    window.open('../sale/view/' + uid)
 })
-
-$('.purchase_range').on('change', function() {
+$('.purchase_range').on('change', function () {
     let val = $(this).val();
-    if(val == "date_range") {
+    if (val == "date_range") {
         $('.date-filter').addClass('on')
     }
     else {
-        
         $('.date-filter').removeClass('on')
     }
 });
-$('.purchase_range').on('change', function() {
+$('.purchase_range').on('change', function () {
     let val = $(this).val();
-    if(val == "date_range") {
+    if (val == "date_range") {
         $('.purchase-date-filter').addClass('on')
     }
     else {
-        
         $('.purchase-date-filter').removeClass('on')
     }
 });
-$('.sale_range').on('change', function() {
+$('.sale_range').on('change', function () {
     let val = $(this).val();
-    if(val == "sale_date_range") {
+    if (val == "sale_date_range") {
         $('.sale-date-filter').addClass('on')
     }
     else {
-        
         $('.sale-date-filter').removeClass('on')
     }
 });
-
-
-
-
-$(document).ready(function() {
-    $('#product-report-download').click(function(e) {
-        e.preventDefault(); 
+$(document).ready(function () {
+    $('#product-report-download').click(function (e) {
+        e.preventDefault();
         var noStock = $('#no_stock').is(':checked');
         var withoutCategory = $('#without_category').is(':checked');
         var url = '/export-products?no_stock=' + noStock + '&without_category=' + withoutCategory;
         window.location.href = url;
-        setTimeout(function() {
+        setTimeout(function () {
             $('#no_stock').prop('checked', false);
             $('#without_category').prop('checked', false);
         }, 1000);
+    });
+    $('#category-report-download').click(function (e) {
+        e.preventDefault();
+        var url = '/export-category';
+        window.location.href = url;
+    });
+    $('#supplier-report-download').click(function (e) {
+        e.preventDefault();
+        var url = '/export-supplier';
+        window.location.href = url;
     });
 });

@@ -1,4 +1,5 @@
 let table = new DataTable('#myTable');
+let table2 = new DataTable('#myTable2');
 
 $('.close-toast').click(function () {
     $('.toast-notification').removeClass('open')

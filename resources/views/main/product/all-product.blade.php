@@ -43,7 +43,8 @@
                             </td>
                             <td>@if($pro->discount!="")@if($pro->discount_type=="percent"){{$pro->discount}}% @else {{$check->currency}}{{$pro->discount}} @endif @else N/A @endif</td>
                             <td>{{$check->currency}}{{$pro->buying_price}} / {{$check->currency}}{{$pro->selling_price}} / {{$check->currency}}@if($pro->discount!="")@if($pro->discount_type=="percent"){{$pro->selling_price - ($pro->selling_price * $pro->discount)/ 100}}@else{{($pro->selling_price - $pro->discount)}} @endif @else{{$pro->selling_price}}@endif</td>
-                            <td>{{$pro->quantity}}</td>
+                            <td>{{$pro->quantity}}
+                            <a target="blank" href="{{url('product/history')}}/{{$pro->unique_id}}"><i class="fa fa-history"></i></a></td>
                             <td>
                                 <div class="status-block">
                                     <i data-id="{{$pro->id}}" class="product-{{$pro->id}} fa fa-check product-status @if($pro->status == 1) {{'active'}} @endif" id="active-status-{{$pro->id}}"></i>

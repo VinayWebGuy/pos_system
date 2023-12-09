@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
-
 use Str;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CategoryExport;
 
 class CategoryController extends Controller
 {
@@ -44,9 +45,7 @@ class CategoryController extends Controller
        $category->delete();
         return response()->json(['success' => true, 'msg' => 'Category deleted successfully']); 
     }
-
     public function updateCategory(Request $req) {
-        // Check First
         $check = Category::where('name', $req->name)->where('id', '!=', $req->id)->first();
         if($check) {
             return response()->json(['success' => false, 'msg' => 'Category name already exists']); 
@@ -59,5 +58,9 @@ class CategoryController extends Controller
             $category->save();
             return response()->json(['success' => true, 'msg' => 'Category updated successfully']); 
         }
+    }
+
+    public function exportCategory(Request $request) {
+        return Excel::download(new CategoryExport($request), 'category.xlsx');
     }
 }

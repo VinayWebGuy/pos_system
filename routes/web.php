@@ -73,5 +73,7 @@ Route::group(['middleware'=>'loginauth'],function(){
 
     // Excel Export
     Route::get('export-products', [ProductController::class, 'exportProducts']);
-
+    Route::get('export-category', [CategoryController::class, 'exportCategory']);
+    Route::get('export-supplier', [SupplierController::class, 'exportSupplier']);
+    
 });

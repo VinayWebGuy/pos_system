@@ -98,6 +98,15 @@ class HomeController extends Controller
             $product = Product::where('unique_id',$id)->first();
             return view('main.product.edit-product', compact('product','category'));
         }
+        else if($action == "history" && $id!="") {
+            $purchase = Purchase::join('suppliers', 'purchase.supplier', '=', 'suppliers.id')
+            ->select('purchase.*', 'purchase.unique_id as purchase_unique_id', 'suppliers.name as supplier_name')
+            ->where('purchase.product_id', $id)
+            ->orderBy('purchase.id', 'desc')
+            ->get();
+            $sale = Sale::where('product_id',$id)->orderBy('id', 'desc')->get();
+            return view('main.product.product-history', compact('purchase','sale'));
+        }
     }
     public function managePurchase($action, $id="") {
         if($action == "all") {

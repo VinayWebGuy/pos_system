@@ -2,26 +2,28 @@
 
 namespace App\Exports;
 
-use App\Models\Category;
+use App\Models\Supplier;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class CategoryExport implements FromCollection, WithHeadings
+class SupplierExport implements FromCollection, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
     */
-
     public function headings():array{
         return[
-            'unique_id',
             'name',
+            'email',
+            'mobile',
+            'city',
+            'state',
             'status',
         ];
     } 
 
     public function collection()
     {
-        return Category::select('unique_id', 'name', 'status')->get();
+        return Supplier::select('name', 'email', 'mobile', 'city', 'state', 'status')->get();
     }
 }
